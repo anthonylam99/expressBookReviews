@@ -29,7 +29,7 @@ function getBooks() {
 
 // Get the book list available in the shop
 public_users.get('/', function (req, res) {
-    getBooks().then((bks) => res.send(JSON.stringify(bks)));
+    getBooks().then((bks) => res.status(200).json({books: bks}));
 });
 
 function searchByISBN(isbn) {
@@ -46,7 +46,7 @@ function searchByISBN(isbn) {
 public_users.get('/isbn/:isbn', function (req, res) {
     searchByISBN(req.params.isbn)
     .then(
-        result => res.send(result),
+        result => res.status(200).send(result),
         error => res.status(error.status).json({message: error.message})
     );
 });
@@ -57,7 +57,7 @@ public_users.get('/author/:author',function (req, res) {
     getBooks()
     .then((bookEntries) => Object.values(bookEntries))
     .then((books) => books.filter((book) => book.author === author))
-    .then((filteredBooks) => res.send(filteredBooks));
+    .then((filteredBooks) => res.send({"booksbyauthor": filteredBooks}));
 });
 
 // Get all books based on title
@@ -66,7 +66,7 @@ public_users.get('/title/:title',function (req, res) {
     getBooks()
     .then((bookEntries) => Object.values(bookEntries))
     .then((books) => books.filter((book) => book.title === title))
-    .then((filteredBooks) => res.send(filteredBooks));
+    .then((filteredBooks) => res.send({"booksbytitle": filteredBooks}));
 });
 
 //  Get book review
